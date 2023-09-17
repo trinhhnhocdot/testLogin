@@ -7,10 +7,12 @@ import LinearGradient from 'react-native-linear-gradient';
 import { API_LOGIN, API_USER } from '../../Api/Helper';
 import axios from 'axios';
 import ViewModal from '../../Component/ViewModal';
-import Button from '../../Component/Button';
+// import {AsyncStorage} from 'react-native';
+
 import navigationService from '../../navigation/navigationService';
-import { useDispatch } from 'react-redux';
-import { addUser } from '../../redux/Slice/UserSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addUser, login } from '../../redux/Slice/UserSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -20,7 +22,18 @@ const windowHeight = Dimensions.get('window').height;
 
 
 const Login = ({ navigation }) => {
+  const [issLogin, setissLogin] = useState(true);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  console.log(user);
+
+  useEffect(() => {
+    if (user.isLoggedIn) {
+      navigation.navigate('Home')
+    } else {
+      navigation.navigate('Login')
+    }
+  }, [user.isLoggedIn])
 
   return (
 
@@ -38,6 +51,8 @@ const Login = ({ navigation }) => {
             <BetweenLogin
               navigation={navigation}
               dispatch={dispatch}
+              issLogin={issLogin}
+
             />
 
           </View>
@@ -62,7 +77,7 @@ const TopLogin = () => {
   )
 }
 
-const BetweenLogin = ({ navigation, dispatch }) => {
+const BetweenLogin = ({ navigation, dispatch, issLogin }) => {
 
   const [Email, setEmail] = useState('');
   const [PassW, setPassW] = useState('')
@@ -91,19 +106,17 @@ const BetweenLogin = ({ navigation, dispatch }) => {
 
     const response = axios.post(API_LOGIN, objectUser)
       .then((response) => {
-        console.log(response.data.message);
-        console.log(response.data);
         if (response.data.message === 'success') {
-         dispatch(addUser(response.data))
-         
+          const putdatauser = response.data.data;
+          dispatch(addUser(putdatauser))
           navigationService.reset('Home')
-       
-        } else{
+          // trinh123@gmail.com
+        } else {
           setisModel(!isModel)
           setckecktexxt('có lỗi xảy ra ')
         }
       })
-       .catch(error => {
+      .catch(error => {
         console.error('lỗi lỗi ', error);
       })
   }

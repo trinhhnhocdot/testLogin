@@ -3,30 +3,20 @@ import React, { useState, useEffect } from 'react'
 import Icon from "react-native-vector-icons/FontAwesome";
 import axios from 'axios';
 import { API_PRODUCT } from '../../Api/Helper';
+import { useSelector } from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({ navigation }) => {
   const [data, setdata] = useState([])
   const [isLoading, setIsLoading] = useState(true);
-  // const [checkimg, setcheckimg] = useState('')
-  const getListProduct = async () => {
-    try {
-      const response = await axios.get(API_PRODUCT)
-        .then(
-          (response) => {
-            setdata(response.data)
-            // console.log('data', response.data);
-            setIsLoading(false)
-          }
-        )
 
-    } catch (error) {
-      console.error('Lỗi khi lấy dữ liệu:', error);
-    }
-  }
-
+  const user = useSelector((state) => state.user);
+  console.log('this home',user);
   useEffect(() => {
-    getListProduct();
+   
+
   }, [])
+
 
 
   const render_item = ({ item }) => {
@@ -37,7 +27,7 @@ const Home = ({ navigation }) => {
         <View style={styles.viewImage}>
           <Image
             style={{ width: 100, height: 45, marginHorizontal: 10 }}
-            source={{ uri: item?.image ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png'}}
+            source={{ uri: item?.image ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Image_not_available.png/640px-Image_not_available.png' }}
           />
 
         </View>

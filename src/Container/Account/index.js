@@ -2,13 +2,21 @@ import { StyleSheet, Text, View, StatusBar, TouchableOpacity, Image } from 'reac
 import React from 'react'
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Linking } from 'react-native';
-import { useSelector } from'react-redux';
-
+import { useDispatch, useSelector } from'react-redux';
+import { clearUser } from '../../redux/Slice/UserSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Account = ({ navigation }) => {
-    const users = useSelector(state => state.user)
+    const dispatch = useDispatch();
+    const user = useSelector((state) => state.user.data[0]);
 
-        console.log('DATA USER REDUX : ',users.data[0].data.Name);
+
+
+    const LogoutEnevt =()=>{
+        dispatch(clearUser())
+        navigation.replace('Login')
+        
+    }
 
                 // sdt 0904886098
                 const callCustomerCare  =()=>{
@@ -34,8 +42,9 @@ const Account = ({ navigation }) => {
                 </View>
                 <TouchableOpacity style={styles.iconContainer}
                     onPress={() => { navigation.goBack() }}
-                >
+                >                                                                                  
                     <Icon name={"chevron-left"} size={23} color={'white'} />
+                    
                 </TouchableOpacity>
             </View>
 
@@ -44,8 +53,10 @@ const Account = ({ navigation }) => {
                 <TouchableOpacity>
                     <Image style={styles.imguser} source={require('../../Asset/Image/user.jpg')} />
                 </TouchableOpacity>
-                <Text style={styles.textname}>{users.data[0].data.Name}</Text>
-                <Text style={styles.textemail}>{users.data[0].data.Email}</Text>
+              {/* <Text  style={styles.textname}>   {`${users?.data[0].data.Name}`}</Text> */}
+              {/* L(`tel:${phoneNumber}`) */}
+                <Text style={styles.textname}>{`${user?.Name}`}</Text>
+                <Text style={styles.textemail}>{`${user?.Email}`}</Text>
             </View>
 
 
@@ -84,10 +95,11 @@ const Account = ({ navigation }) => {
                 </View>
             </View>
             {/* logout */}
-            <TouchableOpacity style={styles.logoutcontainer}>
+            <TouchableOpacity onPress={LogoutEnevt}
+            style={styles.logoutcontainer}>
 
                 <Icon style={styles.itemicon1} name={'chevron-right'} size={10} color={'red'} />
-                <Text>ĐĂNG XUẤT</Text>
+                <Text style={{color:'red',fontWeight:'bold'}}>ĐĂNG XUẤT</Text>
 
             </TouchableOpacity>
 
@@ -161,7 +173,8 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: 30
+        marginTop: 30,
+       
     },
     itemicon1: {
         padding: 10,

@@ -1,15 +1,21 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import { Provider } from'react-redux'
+import { Provider } from 'react-redux'
 import NavigationMain from './src/navigation';
-import MyStore from './src/redux/store/Mystore';
+import MyStore, { persistor } from './src/redux/store/Mystore';
+import { PersistGate } from 'redux-persist/integration/react';
+
+
 
 
 
 const App = () => {
   return (
     <Provider store={MyStore}>
-      <NavigationMain/>
+      <PersistGate loading={null} persistor={persistor} >
+        <NavigationMain />
+      </PersistGate>
+
     </Provider>
   )
 }
